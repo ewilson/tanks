@@ -1,3 +1,5 @@
+from math import sin, cos, pi
+
 import arcade
 
 SCREEN_WIDTH = 960
@@ -13,18 +15,23 @@ class BlueTank(arcade.Sprite):
         self.angle = 90
         self.draw()
         self.d_theta = 0
+        self.speed = 0
 
     def on_key_press(self, key):
         if key == arcade.key.A:
             self.d_theta += 4
         if key == arcade.key.D:
             self.d_theta -= 4
+        if key == arcade.key.UP:
+            self.speed += 6
 
     def on_key_release(self, key):
         if key == arcade.key.A:
             self.d_theta -= 4
         if key == arcade.key.D:
             self.d_theta += 4
+        if key == arcade.key.UP:
+            self.speed -= 6
 
     def on_update(self):
         self.angle += self.d_theta
@@ -38,6 +45,7 @@ class GreenTank(arcade.Sprite):
         self.center_y = SCREEN_HEIGHT / 2
         self.angle = 270
         self.d_theta = 0
+        self.speed = 0
         self.draw()
 
     def on_key_press(self, key):
@@ -45,15 +53,24 @@ class GreenTank(arcade.Sprite):
             self.d_theta += 4
         if key == arcade.key.RIGHT:
             self.d_theta -= 4
+        if key == arcade.key.UP:
+            self.speed += 3
 
     def on_key_release(self, key):
         if key == arcade.key.LEFT:
             self.d_theta -= 4
         if key == arcade.key.RIGHT:
             self.d_theta += 4
+        if key == arcade.key.UP:
+            self.speed -= 3
 
     def on_update(self):
         self.angle += self.d_theta
+        self._move()
+
+    def _move(self):
+        self.center_x += sin(self.angle * pi / 180) * self.speed
+        self.center_y += -cos(self.angle * pi / 180) * self.speed
 
 
 class TanksWindow(arcade.Window):
