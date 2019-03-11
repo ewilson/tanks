@@ -1,12 +1,28 @@
-from math import sin, cos, pi
-
 import arcade
+
+import motion
 
 SCREEN_WIDTH = 960
 SCREEN_HEIGHT = 720
+TANK_SPEED = 3
 
 
-class BlueTank(arcade.Sprite):
+class Tank(arcade.Sprite):
+
+    def __init__(self, sprite_file):
+        super().__init__(sprite_file)
+
+    def on_update(self):
+        self.angle += self.d_theta
+        self._move()
+
+    def _move(self):
+        delta_x, delta_y = motion.move(self.speed, self.angle)
+        self.center_x += delta_x
+        self.center_y += delta_y
+
+
+class BlueTank(Tank):
 
     def __init__(self):
         super().__init__("assets/tank_blue.png")
@@ -22,22 +38,19 @@ class BlueTank(arcade.Sprite):
             self.d_theta += 4
         if key == arcade.key.D:
             self.d_theta -= 4
-        if key == arcade.key.UP:
-            self.speed += 6
+        if key == arcade.key.W:
+            self.speed += TANK_SPEED
 
     def on_key_release(self, key):
         if key == arcade.key.A:
             self.d_theta -= 4
         if key == arcade.key.D:
             self.d_theta += 4
-        if key == arcade.key.UP:
-            self.speed -= 6
-
-    def on_update(self):
-        self.angle += self.d_theta
+        if key == arcade.key.W:
+            self.speed -= TANK_SPEED
 
 
-class GreenTank(arcade.Sprite):
+class GreenTank(Tank):
 
     def __init__(self):
         super().__init__("assets/tank_green.png")
@@ -54,7 +67,7 @@ class GreenTank(arcade.Sprite):
         if key == arcade.key.RIGHT:
             self.d_theta -= 4
         if key == arcade.key.UP:
-            self.speed += 3
+            self.speed += TANK_SPEED
 
     def on_key_release(self, key):
         if key == arcade.key.LEFT:
@@ -62,15 +75,7 @@ class GreenTank(arcade.Sprite):
         if key == arcade.key.RIGHT:
             self.d_theta += 4
         if key == arcade.key.UP:
-            self.speed -= 3
-
-    def on_update(self):
-        self.angle += self.d_theta
-        self._move()
-
-    def _move(self):
-        self.center_x += sin(self.angle * pi / 180) * self.speed
-        self.center_y += -cos(self.angle * pi / 180) * self.speed
+            self.speed -= TANK_SPEED
 
 
 class TanksWindow(arcade.Window):
