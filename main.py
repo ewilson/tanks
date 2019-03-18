@@ -21,6 +21,22 @@ class Tank(arcade.Sprite):
         self.center_x += delta_x
         self.center_y += delta_y
 
+    def setup(self):
+        self.draw()
+        self.bullet.setup(self)
+        self.bullet.draw()
+
+
+class Bullet(arcade.Sprite):
+
+    def __init__(self, sprite_file):
+        super().__init__(sprite_file)
+
+    def setup(self, tank):
+        self.center_x = tank.center_x
+        self.center_y = tank.center_y
+        self.angle = tank.angle
+
 
 class BlueTank(Tank):
 
@@ -29,9 +45,9 @@ class BlueTank(Tank):
         self.center_x = 100
         self.center_y = SCREEN_HEIGHT / 2
         self.angle = 90
-        self.draw()
         self.d_theta = 0
         self.speed = 0
+        self.bullet = Bullet("assets/bulletBlue2.png")
 
     def on_key_press(self, key):
         if key == arcade.key.A:
@@ -40,6 +56,8 @@ class BlueTank(Tank):
             self.d_theta -= 4
         if key == arcade.key.W:
             self.speed += TANK_SPEED
+        if key == arcade.key.S:
+            print("BLUE FIRE")
 
     def on_key_release(self, key):
         if key == arcade.key.A:
@@ -59,7 +77,7 @@ class GreenTank(Tank):
         self.angle = 270
         self.d_theta = 0
         self.speed = 0
-        self.draw()
+        self.bullet = Bullet("assets/bulletGreen2.png")
 
     def on_key_press(self, key):
         if key == arcade.key.LEFT:
@@ -76,6 +94,8 @@ class GreenTank(Tank):
             self.d_theta += 4
         if key == arcade.key.UP:
             self.speed -= TANK_SPEED
+        if key == arcade.key.DOWN:
+            print("GREEN FIRE")
 
 
 class TanksWindow(arcade.Window):
@@ -89,8 +109,8 @@ class TanksWindow(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
-        self.blue_tank.draw()
-        self.green_tank.draw()
+        self.blue_tank.setup()
+        self.green_tank.setup()
 
     def on_key_press(self, key, modifiers):
         self.blue_tank.on_key_press(key)
